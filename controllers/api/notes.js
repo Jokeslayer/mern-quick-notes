@@ -20,6 +20,6 @@ async function index(req, res) {
 }
 
 async function deleteNote(req, res) {
-  const trash = await Note.findOneAndDelete(req.body._id);
+  const trash = await Note.findOneAndDelete({_id: req.body._id});
   res.json(trash);
 }

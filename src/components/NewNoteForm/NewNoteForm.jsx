@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-export default function NewNoteForm({handleAddNote }) {
+export default function NewNoteForm({ handleAddNote }) {
     const navigate = useNavigate();
     const [newNote, setNewNote] = useState({
         content: ''
@@ -12,6 +12,9 @@ export default function NewNoteForm({handleAddNote }) {
     async function handleSubmit(evt) {
         evt.preventDefault();
         handleAddNote(newNote);
+        setNewNote({
+            content: "",
+          });
         navigate('/');
     }
 
@@ -22,7 +25,7 @@ export default function NewNoteForm({handleAddNote }) {
     return (
         <div>
             <form id="add-note-form" onSubmit={handleSubmit}>
-<textarea name="content" value={newNote.content} onChange={handleChange}></textarea>
+                <textarea name="content" value={newNote.content} onChange={handleChange}></textarea>
                 <input type="submit" value="Add Review" />
             </form>
         </div>
