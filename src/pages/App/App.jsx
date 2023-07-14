@@ -1,28 +1,47 @@
-import { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getUser } from '../../utilities/users-service';
 import './App.css';
-import AuthPage from '../AuthPage/AuthPage';
-import NewOrderPage from '../NewOrderPage/NewOrderPage';
-import OrderHistoryPage from '../OrderHistoryPage/OrderHistoryPage';
-import NavBar from '../../components/NavBar/NavBar';
+import NewNoteForm from "../../components/NewNoteForm/NewNoteForm"
+import NoteList from '../../components/NoteList/NoteList';
+import AuthPage from "../AuthPage/AuthPage";
+import * as notesAPI from '../../utilities/notes-api.js';
+
 
 export default function App() {
   const [user, setUser] = useState(getUser());
+  const [notes, setNotes] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(function () {
+    async function getNotes() {
+      const notes = await notesAPI.getAll();
+      setNotes(notes);
+    }
+    getNotes();
+  }, []);
+
+  async function addNote(note) {
+    const newNote = await notesAPI.create(note);
+    setNotes([...notes, newNote]);
+  }
 
   return (
     <main className="App">
-      { user ?
-          <>
-            <NavBar user={user} setUser={setUser} />
-            <Routes>
-              {/* Route components in here */}
-              <Route path="/orders/new" element={<NewOrderPage />} />
-              <Route path="/orders" element={<OrderHistoryPage />} />
-            </Routes>
-          </>
-          :
-          <AuthPage setUser={setUser} />
+      {user ?
+        <>
+
+          <h1>MY NOTEBOOK</h1>
+
+          <h1>ADD NEW NOTE</h1>
+
+          <NewNoteForm handleAddNote={addNote} />
+
+          <NoteList notes={notes} setNotes={setNotes}/>
+
+        </>
+        :
+        <AuthPage setUser={setUser} />
       }
     </main>
   );
